@@ -1,0 +1,19 @@
+A = load '/pigscript/TitanicData.txt' using PigStorage(',') as (passenger_id:int, survived:int, pclass:int, name:chararray, sex:chararray, age:int, sib:int, parch:int, ticket:chararray, fare:double, cabin:chararray, emb:chararray);
+dump A;
+
+B = GROUP A BY pclass;
+C = FOREACH A GENERATE A.pclass, AVG(A.fare);
+dump C;
+
+2)
+SPLIT A INTO F if survived == 0, J if survived == 1;
+R = FILTER F BY emb == 'S';
+peers = GROUP R by pclass;
+cake = FOREACH peers GENERATE group, COUNT(R.pclass);
+dump cake;
+
+3) 
+SPLIT A INTO F if survived == 0, J if survived == 1;
+hail = GROUP J BY sex;
+grail = FOREACH hail GENERATE group, COUNT(J.sex);
+dump grail;
